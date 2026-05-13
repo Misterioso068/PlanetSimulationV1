@@ -16,8 +16,12 @@ add_executable(${PROJECT_NAME}
     src/scene.cpp
     src/scene_manager.cpp
     src/simulation_scene.cpp
-    src/cube.cpp
+    src/planet.cpp
     src/camera.cpp
+    src/mesh_manager.cpp
+    src/texture_manager.cpp
+    src/texture.cpp
+    src/obj_loader.cpp
 )
 
 find_package(OpenGL REQUIRED)

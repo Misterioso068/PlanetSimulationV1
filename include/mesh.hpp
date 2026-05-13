@@ -5,7 +5,9 @@
 
 class Mesh {
     public:
-        bool init(const std::vector<GLfloat>& vertices, const std::vector<GLuint>& indices);
+        ~Mesh();
+
+        bool load(const std::string& filePath);
         GLuint getVAO() const {return m_VAO;}
         GLint getIndexCount() const {return m_indexCount;}
 

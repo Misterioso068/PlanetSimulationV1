@@ -38,6 +38,7 @@ bool Window::init() {
     }
 
     glViewport(0, 0, m_windowWidth, m_windowHeight);
+    SDL_SetWindowRelativeMouseMode(m_window, true);
 
     return true;
 }
@@ -55,14 +56,37 @@ void Window::handleInput(GameState& gameState) {
                 break;
             case SDL_EVENT_KEY_DOWN:
                 if (SDL_SCANCODE_ESCAPE == event.key.scancode) {
-                    if (gameState == GameState::RUNNING) 
-                        gameState = GameState::PAUSED;
-                    else if (gameState == GameState::PAUSED) 
+                    if (gameState == GameState::RUNNING) {
+                        gameState = GameState::PAUSED;  
+                        SDL_SetWindowRelativeMouseMode(m_window, false);
+                    } else if (gameState == GameState::PAUSED) { 
                         gameState = GameState::RUNNING;
+                        SDL_SetWindowRelativeMouseMode(m_window, true);
+                        m_firstMouse = true;
+                    }
+                }
+                else if (SDL_SCANCODE_0 == event.key.scancode) {
+                    // Toggle fullscreen mode
+                    Uint32 flags = SDL_GetWindowFlags(m_window);
+                    if (flags & SDL_WINDOW_FULLSCREEN) {
+                        SDL_SetWindowFullscreen(m_window, 0);
+                        // only show cursor if paused
+                        if (gameState == GameState::PAUSED)
+                            SDL_SetWindowRelativeMouseMode(m_window, false);
+                    } else {
+                        SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN);
+                        if (gameState == GameState::RUNNING)
+                            SDL_SetWindowRelativeMouseMode(m_window, true);
+                    }
+                    m_firstMouse = true;
                 }
                 break;
         }
     }
+}
+
+const bool* Window::getKeyboardState(int *numKeys) {
+    return SDL_GetKeyboardState(numKeys);
 }
 
 void Window::clear() {
@@ -74,12 +98,6 @@ void Window::present() {
     SDL_GL_SwapWindow(m_window);
 }
 
-void Window::resizeWindow(int windowWidth, int windowHeight) {
-    m_windowWidth = windowWidth;
-    m_windowHeight = windowHeight;
-    glViewport(0, 0, windowWidth, windowHeight);
-}
-
 bool Window::wasResized() {
     if (m_resized) {
         m_resized = false;
@@ -87,4 +105,23 @@ bool Window::wasResized() {
     }
 
     return false;
+}
+
+glm::vec2 Window::getMouseDelta() {
+    float deltaX, deltaY;
+    SDL_GetRelativeMouseState(&deltaX, &deltaY);
+
+    if (m_firstMouse) {
+        m_firstMouse = false;
+        return glm::vec2(0.0f);
+    }
+
+    return glm::vec2(deltaX, deltaY);
+}
+
+
+void Window::resizeWindow(int windowWidth, int windowHeight) {
+    m_windowWidth = windowWidth;
+    m_windowHeight = windowHeight;
+    glViewport(0, 0, windowWidth, windowHeight);
 }

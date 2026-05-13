@@ -14,4 +14,16 @@ class Renderer {
 
     private:
         Shader m_shader;
+        GLint m_modelLoc;
+        GLint m_viewLoc;
+        GLint m_projLoc;
+        GLint m_hasTextureLoc;
+        GLint m_texLoc;
+        GLint m_colorLoc;
+        GLint m_isEmissiveLoc;
+        GLint m_lightPosLoc;
+        GLint m_viewPosLoc;
+        GLint m_lightColorLoc;
+
+        GLuint m_defaultTexture = 0;
 };

@@ -2,7 +2,7 @@
 #include "simulation_scene.hpp"
 
 Engine::Engine() : m_window("Planet Simulation", 800, 800, SDL_WINDOW_RESIZABLE), 
-                   m_camera(45.0f, 800.0f / 800.0f, 0.1f, 100.0f), m_gameState(GameState::QUIT){}
+                   m_camera(90.0f, 800.0f / 800.0f, 0.1f, 100.0f), m_gameState(GameState::QUIT){}
 
 Engine::~Engine() {
        
@@ -13,14 +13,14 @@ void Engine::run() {
     if (!m_renderer.init()) return;
 
     m_sceneManager.addScene("simulation", std::make_unique<SimulationScene>());
-    m_sceneManager.loadScene("simulation");
+    m_sceneManager.loadScene("simulation", m_meshManager, m_textureManager);
 
     float lastTime = SDL_GetTicks() / 1000.0f;
 
     m_gameState = GameState::RUNNING;
     while (m_gameState != GameState::QUIT) {
         float currentTime = SDL_GetTicks() / 1000.0f;
-        m_deltaTime = lastTime - currentTime;
+        m_deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
         m_window.handleInput(m_gameState);
@@ -31,6 +31,19 @@ void Engine::run() {
 }
 
 void Engine::update() {
+    glm::vec2 mouseDelta = m_window.getMouseDelta();
+    m_camera.rotate(mouseDelta.x, mouseDelta.y);
+    m_camera.update();
+
+    int numKeys;
+    const bool* keys = m_window.getKeyboardState(&numKeys);
+    if (keys[SDL_SCANCODE_W]) m_camera.moveForward(m_deltaTime);
+    if (keys[SDL_SCANCODE_S]) m_camera.moveBack(m_deltaTime);
+    if (keys[SDL_SCANCODE_A]) m_camera.moveLeft(m_deltaTime);
+    if (keys[SDL_SCANCODE_D]) m_camera.moveRight(m_deltaTime);
+    if (keys[SDL_SCANCODE_SPACE]) m_camera.moveUp(m_deltaTime);
+    if (keys[SDL_SCANCODE_LSHIFT]) m_camera.moveDown(m_deltaTime);
+
     if (m_window.wasResized()) 
         m_camera.setAspectRatio((float)m_window.getWidth() / (float)m_window.getHeight());
     if (m_sceneManager.getCurrentScene())
