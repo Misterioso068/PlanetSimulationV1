@@ -14,6 +14,9 @@ uniform vec3 u_lightPos;    // sun position in world space
 uniform vec3 u_viewPos;     // camera position in world space
 uniform vec3 u_lightColor;  // sun color, usually white
 
+// planet specific (atmosphere)
+uniform vec3 u_atmosphereColor;
+
 out vec4 fragColor;
 
 void main() {
@@ -32,7 +35,7 @@ void main() {
     vec3 viewDir = normalize(u_viewPos - v_fragPos);
 
     // ambient — small base light so dark side isnt pitch black
-    float ambientStrength = 0.05f;
+    float ambientStrength = 0.07f;
     vec3 ambient = ambientStrength * u_lightColor;
 
     // diffuse — main lighting based on angle to sun
@@ -47,5 +50,11 @@ void main() {
 
     // combine
     vec3 result = (ambient + diffuse + specular) * vec3(baseColor);
-    fragColor = vec4(result, 1.0);
+
+    // atmosphere rim effect
+    float rim = 1.0 - max(dot(viewDir, normal), 0.0);
+    rim = pow(rim, 3.0);
+    vec3 atmosphere = u_atmosphereColor * rim * 0.5;
+
+    fragColor = vec4(result + atmosphere, 1.0);
 }
