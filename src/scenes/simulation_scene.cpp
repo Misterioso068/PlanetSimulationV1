@@ -1,6 +1,6 @@
 #include "scenes/simulation_scene.hpp"
 #include "objects/planet.hpp"
-#include "renderer/skybox.hpp"
+#include "rendering/skybox.hpp"
 #include "physics/phyisics_constants.hpp"
 
 void SimulationScene::load(MeshManager& meshManager, TextureManager& textureManager) {
@@ -19,12 +19,11 @@ void SimulationScene::load(MeshManager& meshManager, TextureManager& textureMana
 
     setLightPos(glm::vec3(0.0f, 0.0f, 0.0f));
 
-    // helper to calculate circular orbit velocity
     auto circularOrbitVelocity = [](float radius) {
         return sqrtf(PC::G * PC::SUN_MASS / radius);
     };
 
-    // Sun
+    // Sun — no trail
     auto sun = std::make_unique<Planet>();
     sun->setMesh(meshManager.load("assets/objects/sphere.obj"));
     sun->setTexture(textureManager.load("assets/textures/solar_system/sun_baseColor.jpg"));
@@ -35,7 +34,7 @@ void SimulationScene::load(MeshManager& meshManager, TextureManager& textureMana
     sun->scale(10.0f);
     addObject(std::move(sun));
 
-    // Mercury
+    // Mercury — fast orbit, dense trail
     auto mercury = std::make_unique<Planet>();
     mercury->setMesh(meshManager.load("assets/objects/sphere.obj"));
     mercury->setTexture(textureManager.load("assets/textures/solar_system/mercury_baseColor.jpg"));
@@ -43,7 +42,7 @@ void SimulationScene::load(MeshManager& meshManager, TextureManager& textureMana
     mercury->setMass(PC::MERCURY_MASS);
     mercury->setVelocity(glm::vec3(0.0f, 0.0f, circularOrbitVelocity(20.0f)));
     mercury->translate(glm::vec3(20.0f, 0.0f, 0.0f));
-    mercury->scale(0.4f);
+    mercury->scale(1.0f);
     addObject(std::move(mercury));
 
     // Venus
@@ -79,7 +78,7 @@ void SimulationScene::load(MeshManager& meshManager, TextureManager& textureMana
     mars->scale(0.5f);
     addObject(std::move(mars));
 
-    // Jupiter
+    // Jupiter — slow orbit, sparse trail
     auto jupiter = std::make_unique<Planet>();
     jupiter->setMesh(meshManager.load("assets/objects/sphere.obj"));
     jupiter->setTexture(textureManager.load("assets/textures/solar_system/jupiter_baseColor.jpg"));
@@ -112,7 +111,7 @@ void SimulationScene::load(MeshManager& meshManager, TextureManager& textureMana
     uranus->scale(2.5f);
     addObject(std::move(uranus));
 
-    // Neptune
+    // Neptune — slowest orbit, most sparse trail
     auto neptune = std::make_unique<Planet>();
     neptune->setMesh(meshManager.load("assets/objects/sphere.obj"));
     neptune->setTexture(textureManager.load("assets/textures/solar_system/neptune_baseColor.jpg"));

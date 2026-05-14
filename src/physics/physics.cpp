@@ -45,7 +45,6 @@ void Physics::update(Scene& scene, float deltaTime) {
 glm::vec3 Physics::computeAcceleration(Planet* planetA, Planet* planetB) {
     glm::vec3 dir = planetB->getPosition() - planetA->getPosition();
     float dist = glm::length(dir);
-    float softening = 1.0f; // prevent singularity at close range
-    float forceMag = PhysicsConstants::G * planetB->getMass() / (dist * dist + softening * softening);
+    float forceMag = m_config.G * planetB->getMass() / (dist * dist + m_config.softening * m_config.softening);
     return glm::normalize(dir) * forceMag;
 }

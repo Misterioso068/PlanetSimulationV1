@@ -2,8 +2,8 @@
 
 #include "core/window.hpp"
 #include "core/gamestates.hpp"
-#include "renderer/renderer.hpp"
-#include "renderer/camera.hpp"
+#include "rendering/renderer.hpp"
+#include "rendering/camera.hpp"
 #include "managers/scene_manager.hpp"
 #include "managers/mesh_manager.hpp"
 #include "managers/texture_manager.hpp"
@@ -26,10 +26,10 @@ class Engine {
         MeshManager m_meshManager;
         TextureManager m_textureManager;
         Physics m_physics;
-
-        float m_timeScale = PhysicsConstants::TIME_SCALE;
+        PhysicsConfig m_physicsConfig;
         float m_deltaTime;
 
         void update();
         void render();
+        void loadScene(const std::string& name);
 };  

@@ -1,4 +1,4 @@
-#include "renderer/camera.hpp"
+#include "rendering/camera.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
 Camera::Camera(float fov, float aspectRatio, float near, float far)

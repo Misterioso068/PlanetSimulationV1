@@ -9,12 +9,12 @@ add_executable(${PROJECT_NAME}
     src/glad.c
     src/core/engine.cpp
     src/core/window.cpp
-    src/renderer/renderer.cpp
-    src/renderer/shader.cpp
-    src/renderer/mesh.cpp
-    src/renderer/texture.cpp
-    src/renderer/skybox.cpp
-    src/renderer/camera.cpp
+    src/rendering/renderer.cpp
+    src/rendering/shader.cpp
+    src/rendering/mesh.cpp
+    src/rendering/texture.cpp
+    src/rendering/skybox.cpp
+    src/rendering/camera.cpp
     src/scenes/scene.cpp
     src/scenes/simulation_scene.cpp
     src/scenes/binary_star_scene.cpp

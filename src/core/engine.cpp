@@ -1,5 +1,8 @@
 #include "core/engine.hpp"
 #include "scenes/simulation_scene.hpp"
+#include "scenes/binary_star_scene.hpp"
+#include "scenes/figure_eight_scene.hpp"
+#include "physics/physics_config.hpp"
 
 Engine::Engine() : m_window("Planet Simulation", 800, 800, SDL_WINDOW_RESIZABLE), 
                    m_camera(90.0f, 800.0f / 800.0f, 0.1f, 1000.0f), m_gameState(GameState::QUIT){}
@@ -13,7 +16,8 @@ void Engine::run() {
     if (!m_renderer.init()) return;
 
     m_sceneManager.addScene("simulation", std::make_unique<SimulationScene>());
-    m_sceneManager.loadScene("simulation", m_meshManager, m_textureManager);
+    m_sceneManager.addScene("binary_star", std::make_unique<BinaryStarScene>());
+    m_sceneManager.addScene("figure_eight", std::make_unique<FigureEightScene>());
 
     float lastTime = SDL_GetTicks() / 1000.0f;
 
@@ -34,15 +38,23 @@ void Engine::update() {
     int numKeys;
     const bool* keys = m_window.getKeyboardState(&numKeys);
 
+    // change scenes
+    if (keys[SDL_SCANCODE_1]) loadScene("simulation");
+    if (keys[SDL_SCANCODE_2]) loadScene("binary_star");
+    if (keys[SDL_SCANCODE_3]) loadScene("figure_eight");
+
+    Scene* currentScene = m_sceneManager.getCurrentScene();
+    if (!currentScene) return; // no scene loaded, skip everything
+
     // time scale control
-    if (keys[SDL_SCANCODE_EQUALS]) m_timeScale += 5.0f * m_deltaTime;
-    if (keys[SDL_SCANCODE_MINUS]) m_timeScale -= 5.0f * m_deltaTime;
-    m_timeScale = glm::max(1.0f, m_timeScale);
+    if (keys[SDL_SCANCODE_EQUALS]) m_physicsConfig.timeScale += 5.0f * m_deltaTime;
+    if (keys[SDL_SCANCODE_MINUS]) m_physicsConfig.timeScale -= 5.0f * m_deltaTime;
+    m_physicsConfig.timeScale = glm::max(1.0f, m_physicsConfig.timeScale);
 
     // physics
-    float physicsStep = (m_deltaTime * m_timeScale) / PhysicsConstants::PHYSICS_STEPS;
-    for (int i = 0; i < PhysicsConstants::PHYSICS_STEPS; i++) {
-        m_physics.update(*m_sceneManager.getCurrentScene(), physicsStep);
+    float physicsStep = (m_deltaTime * m_physicsConfig.timeScale) / m_physicsConfig.physicsSteps;
+    for (int i = 0; i < m_physicsConfig.physicsSteps; i++) {
+        m_physics.update(*currentScene, physicsStep);
     }
 
     // camera
@@ -60,11 +72,20 @@ void Engine::update() {
     if (m_window.wasResized())
         m_camera.setAspectRatio((float)m_window.getWidth() / (float)m_window.getHeight());
     if (m_sceneManager.getCurrentScene())
-        m_sceneManager.getCurrentScene()->update(m_deltaTime);
+        currentScene->update(m_deltaTime * m_physicsConfig.timeScale);
 }
 
+// engine.render()
 void Engine::render() {
     m_window.clear();
-    m_renderer.draw(*m_sceneManager.getCurrentScene(), m_camera);
+    Scene* currentScene = m_sceneManager.getCurrentScene();
+    if (currentScene)
+        m_renderer.draw(*currentScene, m_camera);
     m_window.present();
+}
+
+void Engine::loadScene(const std::string& name) {
+    m_sceneManager.loadScene(name, m_meshManager, m_textureManager);
+    m_physicsConfig = m_sceneManager.getCurrentScene()->getPhysicsConfig();
+    m_physics.setConfig(m_physicsConfig);
 }

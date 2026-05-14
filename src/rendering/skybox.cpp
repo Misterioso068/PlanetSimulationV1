@@ -1,6 +1,6 @@
 #include <iostream>
 #include <stb_image.h>
-#include "renderer/skybox.hpp"
+#include "rendering/skybox.hpp"
 
 bool Skybox::load(MeshManager& meshManager, const std::vector<std::string>& faces) {
     m_mesh = meshManager.load("assets/objects/cube.obj");

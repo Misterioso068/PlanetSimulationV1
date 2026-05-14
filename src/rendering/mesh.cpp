@@ -1,4 +1,4 @@
-#include "renderer/mesh.hpp"
+#include "rendering/mesh.hpp"
 #include "utils/obj_loader.hpp"
 
 Mesh::~Mesh() {

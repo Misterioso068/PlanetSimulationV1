@@ -1,5 +1,6 @@
-#include "renderer/renderer.hpp"
+#include "rendering/renderer.hpp"
 #include "objects/gameobject.hpp"
+#include "objects/planet.hpp"
 
 bool Renderer::init() {
     glEnable(GL_DEPTH_TEST);
@@ -35,7 +36,7 @@ bool Renderer::init() {
     return true;
 }
 
-void Renderer::draw(const Scene& scene, const Camera& camera) {
+void Renderer::draw(const Scene& scene, const Camera& camera) {    
     m_shader.use();
 
     glUniformMatrix4fv(m_viewLoc, 1, GL_FALSE, glm::value_ptr(camera.getView()));

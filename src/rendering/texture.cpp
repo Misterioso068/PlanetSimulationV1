@@ -1,4 +1,4 @@
-#include "renderer/texture.hpp"
+#include "rendering/texture.hpp"
 #include <iostream>
 #include <stb_image.h>
 

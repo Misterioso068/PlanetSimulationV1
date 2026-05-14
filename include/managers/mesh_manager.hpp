@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <memory>
 #include <string>
-#include "renderer/mesh.hpp"
+#include "rendering/mesh.hpp"
 
 class MeshManager {
     public:

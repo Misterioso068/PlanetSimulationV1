@@ -3,16 +3,15 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "renderer/shader.hpp"
+#include "rendering/shader.hpp"
 #include "scenes/scene.hpp"
-#include "renderer/camera.hpp"
-#include "renderer/skybox.hpp"
+#include "rendering/camera.hpp"
+#include "rendering/skybox.hpp"
 
 class Renderer {
     public:
         bool init();
         void draw(const Scene& scene, const Camera& camera);
-        void drawSkybox(const Skybox& skybox, const Camera& camera);
 
     private:
         Shader m_shader;
@@ -36,4 +35,6 @@ class Renderer {
 
         // Planet specific
         GLint m_atmosphereColorLoc;
+
+        void drawSkybox(const Skybox& skybox, const Camera& camera);
 };

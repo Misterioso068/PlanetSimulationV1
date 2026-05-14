@@ -3,7 +3,9 @@
 #include <vector>
 #include <memory>
 #include "objects/gameobject.hpp"
-#include "renderer/skybox.hpp"
+#include "rendering/skybox.hpp"
+#include "physics/physics_config.hpp"
+
 
 class MeshManager;
 class TextureManager;
@@ -12,6 +14,7 @@ class Scene {
     public:
         virtual void load(MeshManager& meshManger, TextureManager& textureManager) {}  // each scene overrides this to build itself
         virtual void unload() {}
+        virtual PhysicsConfig getPhysicsConfig() const { return PhysicsConfig{}; } // default
         
         void update(float deltaTime);
 

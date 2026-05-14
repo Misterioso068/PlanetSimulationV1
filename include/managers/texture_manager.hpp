@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <memory>
 #include <string>
-#include "renderer/texture.hpp"
+#include "rendering/texture.hpp"
 
 class TextureManager {
     public:

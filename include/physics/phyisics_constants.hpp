@@ -2,13 +2,10 @@
 #pragma once
 
 namespace PhysicsConstants {
-    // The accurate G is 6.67430 × 10^-11,
-    // but that would mean no movement visually for the simulation
-    // so I will use 0.001f.
-    constexpr float G = 0.001f;
-
-    constexpr int PHYSICS_STEPS = 10;
+    constexpr float G = 0.001f; // The accurate G is 6.67430 × 10^-11,
+    constexpr float SOFTENING = 1.0f;
     constexpr float TIME_SCALE = 10.0f;
+    constexpr int PHYSICS_STEPS = 10;
 
     // Planet masses relative to Earth (Earth = 1.0)
     constexpr float EARTH_MASS = 1.0f;

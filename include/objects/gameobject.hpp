@@ -1,8 +1,8 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "renderer/mesh.hpp"
-#include "renderer/texture.hpp"
+#include "rendering/mesh.hpp"
+#include "rendering/texture.hpp"
 
 class GameObject {
     public:

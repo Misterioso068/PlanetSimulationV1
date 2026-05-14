@@ -3,12 +3,13 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "objects/gameobject.hpp"
-#include "renderer/mesh.hpp"
-#include "renderer/texture.hpp"
+#include "rendering/mesh.hpp"
+#include "rendering/texture.hpp"
 
 class Planet : public GameObject {
     public:
         Planet();
+        ~Planet();
 
         void update(float deltaTime) override;
 
