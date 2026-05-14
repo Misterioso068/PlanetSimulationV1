@@ -1,16 +1,19 @@
 #include "rendering/camera.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera::Camera(float fov, float aspectRatio, float near, float far)
-    : m_fov(fov), m_aspectRatio(aspectRatio), m_near(near), m_far(far),
+Camera::Camera(float aspectRatio, CameraConfig config) 
+    : m_aspectRatio(aspectRatio), m_config(config),
       m_worldUp(0.0f, 1.0f, 0.0f),
       m_position(0.0f, 10.0f, 20.0f),
       m_front(0.0f, 0.0f, -1.0f),
       m_yaw(-90.0f),
-      m_pitch(0.0f),
-      m_speed(20.0f),
-      m_sens(0.5f)
+      m_pitch(0.0f)
 {
+    update();
+}
+
+void Camera::setConfig(const CameraConfig& config) {
+    m_config = config;
     update();
 }
 
@@ -26,33 +29,33 @@ void Camera::update() {
 }
 
 void Camera::moveForward(float deltaTime) {
-    m_position += m_front * m_speed * deltaTime;
+    m_position += m_front * m_config.speed * deltaTime;
 }
 
 void Camera::moveBack(float deltaTime) {
-    m_position -= m_front * m_speed * deltaTime;
+    m_position -= m_front * m_config.speed * deltaTime;
 }
 
 void Camera::moveLeft(float deltaTime) {
-    m_position -= m_right * m_speed * deltaTime;
+    m_position -= m_right * m_config.speed * deltaTime;
 }
 
 void Camera::moveRight(float deltaTime) {
-    m_position += m_right * m_speed * deltaTime;
+    m_position += m_right * m_config.speed * deltaTime;
 }
 
 void Camera::moveUp(float deltaTime) {
-    m_position += m_cameraUp * m_speed * deltaTime;
+    m_position += m_cameraUp * m_config.speed * deltaTime;
 }
 
 void Camera::moveDown(float deltaTime) {
-    m_position -= m_cameraUp * m_speed * deltaTime;
+    m_position -= m_cameraUp * m_config.speed * deltaTime;
 }
 
 void Camera::rotate(float xoffset, float yoffset) {
     // Apply sensitivity
-    xoffset *= m_sens;
-    yoffset *= m_sens;
+    xoffset *= m_config.sensitivity;
+    yoffset *= m_config.sensitivity;
 
     // Update yaw and pitch
     m_yaw += xoffset;
@@ -64,21 +67,9 @@ void Camera::rotate(float xoffset, float yoffset) {
 }
 
 glm::mat4 Camera::getView() const {
-    return glm::lookAt(m_position, m_position + m_front, m_cameraUp);
+        return glm::lookAt(m_position, m_position + m_front, m_cameraUp);
 }
 
 glm::mat4 Camera::getProjection() const {
-    return glm::perspective(glm::radians(m_fov), m_aspectRatio, m_near, m_far);
-}
-
-void Camera::setPosition(glm::vec3 position) {
-    m_position = position;
-}
-
-void Camera::setFront(glm::vec3 front) {
-    m_front = front;
-}
-
-void Camera::setAspectRatio(float aspectRatio) {
-    m_aspectRatio = aspectRatio;
+        return glm::perspective(glm::radians(m_config.fov), m_aspectRatio, m_config.near, m_config.far);
 }

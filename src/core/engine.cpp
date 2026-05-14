@@ -2,14 +2,11 @@
 #include "scenes/simulation_scene.hpp"
 #include "scenes/binary_star_scene.hpp"
 #include "scenes/figure_eight_scene.hpp"
-#include "physics/physics_config.hpp"
 
 Engine::Engine() : m_window("Planet Simulation", 800, 800, SDL_WINDOW_RESIZABLE), 
-                   m_camera(90.0f, 800.0f / 800.0f, 0.1f, 1000.0f), m_gameState(GameState::QUIT){}
+                   m_camera(1.0f), m_gameState(GameState::QUIT){}
 
-Engine::~Engine() {
-       
-}
+Engine::~Engine() {}
 
 void Engine::run() {
     if (!m_window.init()) return;
@@ -18,6 +15,7 @@ void Engine::run() {
     m_sceneManager.addScene("simulation", std::make_unique<SimulationScene>());
     m_sceneManager.addScene("binary_star", std::make_unique<BinaryStarScene>());
     m_sceneManager.addScene("figure_eight", std::make_unique<FigureEightScene>());
+    loadScene("simulation");
 
     float lastTime = SDL_GetTicks() / 1000.0f;
 
