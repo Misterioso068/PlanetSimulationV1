@@ -46,14 +46,18 @@ void Engine::update() {
     Scene* currentScene = m_sceneManager.getCurrentScene();
     if (!currentScene) return; // no scene loaded, skip everything
 
+    float timeScale = m_physics.getTimeScale();
+    float physicsSteps = m_physics.getPhysicsSteps();
+
     // time scale control
-    if (keys[SDL_SCANCODE_EQUALS]) m_physicsConfig.timeScale += 5.0f * m_deltaTime;
-    if (keys[SDL_SCANCODE_MINUS]) m_physicsConfig.timeScale -= 5.0f * m_deltaTime;
-    m_physicsConfig.timeScale = glm::max(1.0f, m_physicsConfig.timeScale);
+    if (keys[SDL_SCANCODE_EQUALS]) 
+        m_physics.setTimeScale(glm::max(1.0f, m_physics.getTimeScale() + 5.0f * m_deltaTime));
+    if (keys[SDL_SCANCODE_MINUS]) 
+        m_physics.setTimeScale(glm::max(1.0f, m_physics.getTimeScale() - 5.0f * m_deltaTime));
 
     // physics
-    float physicsStep = (m_deltaTime * m_physicsConfig.timeScale) / m_physicsConfig.physicsSteps;
-    for (int i = 0; i < m_physicsConfig.physicsSteps; i++) {
+    float physicsStep = (m_deltaTime * timeScale) / physicsSteps;
+    for (int i = 0; i < physicsSteps; i++) {
         m_physics.update(*currentScene, physicsStep);
     }
 
@@ -72,7 +76,7 @@ void Engine::update() {
     if (m_window.wasResized())
         m_camera.setAspectRatio((float)m_window.getWidth() / (float)m_window.getHeight());
     if (m_sceneManager.getCurrentScene())
-        currentScene->update(m_deltaTime * m_physicsConfig.timeScale);
+        currentScene->update(m_deltaTime * timeScale);
 }
 
 // engine.render()
@@ -86,6 +90,5 @@ void Engine::render() {
 
 void Engine::loadScene(const std::string& name) {
     m_sceneManager.loadScene(name, m_meshManager, m_textureManager);
-    m_physicsConfig = m_sceneManager.getCurrentScene()->getPhysicsConfig();
-    m_physics.setConfig(m_physicsConfig);
+    m_physics.setConfig(m_sceneManager.getCurrentScene()->getPhysicsConfig());
 }

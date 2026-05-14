@@ -26,7 +26,6 @@ class Engine {
         MeshManager m_meshManager;
         TextureManager m_textureManager;
         Physics m_physics;
-        PhysicsConfig m_physicsConfig;
         float m_deltaTime;
 
         void update();
