@@ -32,12 +32,10 @@ add_executable(${PROJECT_NAME}
 
 find_package(OpenGL REQUIRED)
 find_package(SDL3 REQUIRED CONFIG)
-find_package(glm REQUIRED CONFIG)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     OpenGL::GL
     SDL3::SDL3
-    glm::glm
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
